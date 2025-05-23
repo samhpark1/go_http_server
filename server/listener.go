@@ -16,7 +16,7 @@ func (s *Server) ListenAndServe() error {
 	ln, err := net.Listen("tcp", ":"+s.Addr)
 
 	if err != nil {
-		return errors.New("Could not bind to socket: " + s.Addr)
+		return errors.New("could not bind to port: " + s.Addr)
 	}
 
 	fmt.Println("Successfully binded to port ", s.Addr)
@@ -44,12 +44,18 @@ func handleConnection(conn net.Conn) {
 
 	buffer := make([]byte, 4096)
 	n, err := conn.Read(buffer)
-	truncated := buffer[:n]
-
-	ParseRequest(truncated)
 
 	if err != nil {
 		fmt.Println("Could not read from connection")
 	}
+
+	truncated := buffer[:n]
+	req, err := ParseRequest(truncated)
+
+	if err != nil {
+		//return error response
+	}
+
+	fmt.Println(req)
 
 }
