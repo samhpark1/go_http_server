@@ -4,6 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"net"
+
+	"github.com/samhpark1/go_http_server/core"
 )
 
 // struct to store port to listen (exported)
@@ -50,12 +52,21 @@ func handleConnection(conn net.Conn) {
 	}
 
 	truncated := buffer[:n]
-	req, err := ParseRequest(truncated)
+	req, err := core.ParseRequest(truncated)
 
 	if err != nil {
 		//return error response
 	}
 
-	fmt.Println(req)
+	test_header := map[string]string{
+		"Content-Type": "application/json",
+	}
+
+	json := "{\"message\": \"success!\"}"
+
+	resp := core.CreateResponse(200, req.Version, "OK", test_header, []byte(json))
+	fmt.Println(resp)
+
+	conn.Write(resp.ToBytes())
 
 }

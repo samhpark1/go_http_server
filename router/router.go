@@ -6,10 +6,10 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/samhpark1/go_http_server/server"
+	"github.com/samhpark1/go_http_server/core"
 )
 
-type HandlerFunc func(req *server.Request) *server.Response
+type HandlerFunc func(req *core.Request) *core.Response
 
 type Router struct {
 	routes map[string]map[string]HandlerFunc
@@ -49,7 +49,7 @@ func (r *Router) AddRoute(method string, route string, handler HandlerFunc) {
 
 }
 
-func (r *Router) Server(req *server.Request) *server.Response {
+func (r *Router) Serve(req *core.Request) *core.Response {
 	var reqRoute string
 
 	pattern := `.+\..+$`
@@ -86,17 +86,14 @@ func (r *Router) Server(req *server.Request) *server.Response {
 	}
 
 	return handler(req)
-
-	//check for not allowed method and route combos and call 405 handler
-
 }
 
-func HandleNotFound(req *server.Request) *server.Response {
-	resp := server.CreateResponse(404, req.Version, "Not Found", make(map[string]string), make([]byte, 0))
+func HandleNotFound(req *core.Request) *core.Response {
+	resp := core.CreateResponse(404, req.Version, "Not Found", make(map[string]string), make([]byte, 0))
 	return resp
 }
 
-func HandleNotAllowed(req *server.Request) *server.Response {
-	resp := server.CreateResponse(405, req.Version, "Not Allowed", make(map[string]string), make([]byte, 0))
+func HandleNotAllowed(req *core.Request) *core.Response {
+	resp := core.CreateResponse(405, req.Version, "Not Allowed", make(map[string]string), make([]byte, 0))
 	return resp
 }
